@@ -1,0 +1,8 @@
+Hi!
+
+Here is your personal key: PERSONALKEY
+
+Thank you for your interest! Have a nice day!
+
+Yours,
+keysend.py
