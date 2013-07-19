@@ -1,6 +1,6 @@
 keysend
 =======
-keysend.py is a small python3 script that lets you send unique promotion codes/activation keys to a list of email addresses
+I had to bulk send software activation keys and needed a quick solution. keysend.py is a small python3 script that lets you send individualized content to a list of email addresses.
 
 Basic use
 ---------
