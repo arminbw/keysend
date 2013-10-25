@@ -3,24 +3,27 @@
 import sys, argparse, smtplib, time, csv, os
 from email.mime.text import MIMEText
 
-
-
-
+# smtp_user = 'u026682'					# smtp user name for authentification
+# smtp_password = '1802'						# smtp password for authentification
+# smtp_server = 'smtp.sil.at'				# smtp server address
+# from_address = 'pi@brokenrul.es'				# email address of the sender (that's you!)
+# subject = 'Your Secrets of Raetikon alpha key'  # subject of the email
+# addresses_filename = 'addresses.txt'			# file with one email address per line
+# keys_filename = 'keys.txt'						# file with one key per line
+# template_filename = 'template.txt'				# template file for the email
+# bcc_address = 'brokenrules@inbox.promoterapp.com'
 
 parser = argparse.ArgumentParser(description='Send keys in a file to eMail addresses in another file.')
 parser.add_argument('--smtp_user', '-u', help='SMTP username')
-parser.add_argument('--smtp_password', '-p', nargs=1, help='SMTP password')
-parser.add_argument('--smtp_server', '-e', nargs=1, help='SMTP server')
-parser.add_argument('--from_address', '-f', nargs=1, help='From address')
-parser.add_argument('--subject', '-s', nargs=1, help='Subject')
-parser.add_argument('--addresses_filename', '-a', nargs=1, type=argparse.FileType('r'), help='File containing lines with <name> TAB <eMail address>')
-parser.add_argument('--keys_filename', '-k', nargs=1, type=argparse.FileType('r'), help='File containing keys. One key per line.')
-parser.add_argument('--template_filename', '-t', nargs=1, help='File containing eMail body template. [FIRST_NAME] is replaced with first name, [NAME] with full name and [KEY] is replaced with key')
+parser.add_argument('--smtp_password', '-p', help='SMTP password')
+parser.add_argument('--smtp_server', '-e', help='SMTP server')
+parser.add_argument('--from_address', '-f', help='From address')
+parser.add_argument('--subject', '-s', help='Subject')
+parser.add_argument('--addresses_filename', '-a', type=argparse.FileType('r'), help='File containing lines with <name> TAB <eMail address>')
+parser.add_argument('--keys_filename', '-k', type=argparse.FileType('r'), help='File containing keys. One key per line.')
+parser.add_argument('--template_filename', '-t', help='File containing eMail body template. [FIRST_NAME] is replaced with first name, [NAME] with full name and [KEY] is replaced with key')
 parser.add_argument('--bcc_address', '-b', nargs='?', help='Bcc address')
 parser.add_argument('--dryrun', '-d', help='Dry run. Do not send anything', action="store_true")
-
-class Args(object):
-	pass
 
 args = parser.parse_args()
 print vars(args)
@@ -32,6 +35,10 @@ if args.dryrun:
 bcc = False
 if args.bcc_address is not None:
 	bcc = True
+
+if not (args.smtp_user and args.smtp_user and args.smtp_server and args.from_address and args.subject and args.addresses_filename and args.keys_filename and args.template_filename):
+	print('Missing arguments')
+	sys.exit(0)
 
 def send_email(from_address, to_address, text, subject):
 	message = MIMEText(text)
