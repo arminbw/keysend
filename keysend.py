@@ -3,16 +3,6 @@
 import sys, argparse, smtplib, time, csv, os
 from email.mime.text import MIMEText
 
-# smtp_user = 'u026682'					# smtp user name for authentification
-# smtp_password = '1802'						# smtp password for authentification
-# smtp_server = 'smtp.sil.at'				# smtp server address
-# from_address = 'pi@brokenrul.es'				# email address of the sender (that's you!)
-# subject = 'Your Secrets of Raetikon alpha key'  # subject of the email
-# addresses_filename = 'addresses.txt'			# file with one email address per line
-# keys_filename = 'keys.txt'						# file with one key per line
-# template_filename = 'template.txt'				# template file for the email
-# bcc_address = 'brokenrules@inbox.promoterapp.com'
-
 parser = argparse.ArgumentParser(description='Send keys in a file to eMail addresses in another file.')
 parser.add_argument('--smtp_user', '-u', help='SMTP username')
 parser.add_argument('--smtp_password', '-p', help='SMTP password')
