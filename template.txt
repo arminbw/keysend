@@ -1,8 +1,7 @@
-Hi!
+Hello [NAME]!
 
-Here is your personal key: PERSONALKEY
+Here's a download key for you:
+[KEY]
 
-Thank you for your interest! Have a nice day!
-
-Yours,
+Cheers,
 keysend.py
