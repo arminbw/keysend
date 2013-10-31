@@ -24,17 +24,12 @@ parser.add_argument('--keys_filename', '-k', type=argparse.FileType('r'), help='
 parser.add_argument('--template_filename', '-t', help='File containing eMail body template. [FIRST_NAME] is replaced with first name, [NAME] with full name and [KEY] is replaced with key')
 parser.add_argument('--bcc_address', '-b', nargs='?', help='Bcc address')
 parser.add_argument('--dryrun', '-d', help='Dry run. Do not send anything', action="store_true")
+parser.add_argument('--verbose', '-v', help='Print verbose stuff.', action="store_true")
 
 args = parser.parse_args()
-print vars(args)
 
-dryrun = False
-if args.dryrun:
-	dryrun = True
-
-bcc = False
-if args.bcc_address is not None:
-	bcc = True
+if args.verbose:
+	print vars(args)
 
 if not (args.smtp_user and args.smtp_user and args.smtp_server and args.from_address and args.subject and args.addresses_filename and args.keys_filename and args.template_filename):
 	print('Missing arguments')
@@ -42,18 +37,19 @@ if not (args.smtp_user and args.smtp_user and args.smtp_server and args.from_add
 
 def send_email(from_address, to_address, text, subject):
 	message = MIMEText(text)
-	message['From'] = args.from_address
-	message['To'] = args.to_address
-	message['Subject'] = args.subject
-	if bcc:
+	message['From'] = from_address
+	message['To'] = to_address
+	message['Subject'] = subject
+	if args.bcc_address is not None:
 		message['Bcc'] = args.bcc_address
 	try:
-		if dryrun:
+		if args.verbose:
 			print message.as_string()
-		else:
-			# server.sendmail(from_address, to_address, message.as_string())
-			print "sendmail"
-		print('mail sent successfully.\n')
+		
+		if not args.dryrun:
+			server.sendmail(from_address, to_address, message.as_string())
+		if args.verbose:
+			print('mail sent successfully.\n')
 	except:
 		print('failed to send mail.\n')
 		server.close()
@@ -64,8 +60,8 @@ def get_file_content(filename):
 		content = fp.read()
 	return content
 
-addresses = get_file_content(args.addresses_filename).splitlines()
-keys = get_file_content(args.keys_filename).splitlines()
+addresses = args.addresses_filename.read().splitlines()
+keys = args.keys_filename.read().splitlines()
 if len(addresses) > len(keys):
 	print('not enough keys provided (%i addresses, only %i keys)' % (len(addresses), len(keys)))
 	sys.exit(1)
