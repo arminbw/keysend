@@ -4,7 +4,7 @@ I had to bulk send software activation keys and needed a quick solution. keysend
 
 Basic use
 ---------
-python3 keysend.py
+	python3 keysend.py
 
 before running the script, edit the following files:
 * addresses.txt - should contain the addresses of all the recipients. Tab separated name and email address. One recipient per line.
@@ -14,9 +14,9 @@ before running the script, edit the following files:
 
 Example
 -------
-> python keysend.py -u username -p password -e smtp.server.com -f me@mydomain.com -s "Your personal key for awesome game"
+	python3 keysend.py -u username -p password -e smtp.server.com -f me@mydomain.com -s "Your personal key"
 
 type this to get a list of all parameters:
-> python keysend.py --help
+	python3 keysend.py --help
 
 This script can be easily adjusted for more complex tasks (e.g. more personalized content). It can also be used to bulk send unwanted advertising materials. Don't do this. Nobody likes spam. Also, check the rules of your SMTP server. Some providers will lock your account if you exceed your daily limits.
