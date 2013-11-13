@@ -2,6 +2,8 @@ keysend
 =======
 I had to bulk send software activation keys and needed a quick solution. keysend.py is a small python3 script that lets you send individualized content to a list of email addresses.
 
+This script can be easily adjusted for more complex tasks (e.g. more personalized content). It can also be used to bulk send unwanted advertising materials. Don't do this. Nobody likes spam. Also, check the rules of your SMTP server. Some providers will lock your account if you exceed your daily limits.
+
 Basic use
 ---------
 	python3 keysend.py
@@ -19,4 +21,3 @@ Example
 type this to get a list of all parameters:
 	python3 keysend.py --help
 
-This script can be easily adjusted for more complex tasks (e.g. more personalized content). It can also be used to bulk send unwanted advertising materials. Don't do this. Nobody likes spam. Also, check the rules of your SMTP server. Some providers will lock your account if you exceed your daily limits.
