@@ -1,29 +1,25 @@
 #!/usr/bin/env python3
 
-import sys, argparse, smtplib, time, csv, os
+import sys, argparse, smtplib, time
 from email.mime.text import MIMEText
 
-parser = argparse.ArgumentParser(description='Send keys in a file to eMail addresses in another file.')
-parser.add_argument('--smtp_user', '-u', help='SMTP username')
-parser.add_argument('--smtp_password', '-p', help='SMTP password')
-parser.add_argument('--smtp_server', '-e', help='SMTP server')
-parser.add_argument('--from_address', '-f', help='From address')
-parser.add_argument('--subject', '-s', help='Subject')
-parser.add_argument('--addresses_filename', '-a', type=argparse.FileType('r'), help='File containing lines with <name> TAB <eMail address>')
-parser.add_argument('--keys_filename', '-k', type=argparse.FileType('r'), help='File containing keys. One key per line.')
-parser.add_argument('--template_filename', '-t', help='File containing eMail body template. [FIRST_NAME] is replaced with first name, [NAME] with full name and [KEY] is replaced with key')
-parser.add_argument('--bcc_address', '-b', nargs='?', help='Bcc address')
-parser.add_argument('--dryrun', '-d', help='Dry run. Do not send anything', action="store_true")
-parser.add_argument('--verbose', '-v', help='Print verbose stuff.', action="store_true")
+parser = argparse.ArgumentParser(description='bulk send software keys')
+parser.add_argument('--smtp_user', '-u', help='smtp username', required=True)
+parser.add_argument('--smtp_password', '-p', help='smpt password', required=True)
+parser.add_argument('--smtp_server', '-e', help='smpt server address', required=True)
+parser.add_argument('--from_address', '-f', help='email sender address', required=True)
+parser.add_argument('--subject', '-s', help='email subject', required=True)
+parser.add_argument('--addresses_filename', '-a', type=argparse.FileType('r'), help='file containing lines with <name> TAB <email address>', default="addresses.txt")
+parser.add_argument('--keys_filename', '-k', type=argparse.FileType('r'), help='file containing keys, one key per line', default="keys.txt")
+parser.add_argument('--template_filename', '-t', help='file containing email body template. [NAME] is replaced with the name, [KEY] is replaced with key', default="template.txt")
+parser.add_argument('--bcc_address', '-b', nargs='?', help='bcc address')
+parser.add_argument('--dryrun', '-d', help='dry run. Do not send anything.', action="store_true")
+parser.add_argument('--verbose', '-v', help='verbose mode', action="store_true")
 
 args = parser.parse_args()
 
 if args.verbose:
 	print vars(args)
-
-if not (args.smtp_user and args.smtp_user and args.smtp_server and args.from_address and args.subject and args.addresses_filename and args.keys_filename and args.template_filename):
-	print('Missing arguments')
-	sys.exit(0)
 
 def send_email(from_address, to_address, text, subject):
 	message = MIMEText(text)
@@ -35,13 +31,12 @@ def send_email(from_address, to_address, text, subject):
 	try:
 		if args.verbose:
 			print message.as_string()
-		
 		if not args.dryrun:
 			server.sendmail(from_address, to_address, message.as_string())
 		if args.verbose:
-			print('mail sent successfully.\n')
+			print('mail sent successfully.')
 	except:
-		print('failed to send mail.\n')
+		print('failed to send mail.\naborting.\n')
 		server.close()
 		raise
 
@@ -70,15 +65,14 @@ except:
 	raise
 
 keyNumber = 0
-for line in csv.reader(addresses, delimiter="\t"):
+for line in addresses:
+	name = line.split('\t')[0]
+	# name = name.split()[0] # use the first name only
+	address = line.split('\t')[1]
 	text = template.replace("[KEY]", keys[keyNumber])
-
-	name = line[0].split()[0]
-
 	text = text.replace("[NAME]", name)
-	print("-- %i	To: %s <%s> Key: %s --" % (keyNumber, name, line[1], keys[keyNumber]))
-	send_email(args.from_address, line[1], text, args.subject)
-
+	print("email no.%i\tTo: %s <%s>\tKey: %s" % (keyNumber+1, name, address, keys[keyNumber]))
+	send_email(args.from_address, address, text, args.subject)
 	time.sleep(0.5)
 	keyNumber += 1
 	
